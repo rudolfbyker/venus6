@@ -68,7 +68,7 @@ def interpret_messages(lines, skip_nmea=False):
     print("interpret_messages for loop completed")
 
 
-def look_for_ack(messages, msg_id, limit=5):
+def look_for_ack(messages, msg_id, limit):
     from output_messages import NackMessage, AckMessage
 
     for i, m in enumerate(messages):
@@ -82,27 +82,29 @@ def look_for_ack(messages, msg_id, limit=5):
     raise RuntimeError("No ACK found in messages.")
 
 
-def detect_baudrate(serial_port):
+def detect_baudrate(serial_port, look_for_ack_limit, retries):
     import serial
     from input_messages import QuerySoftwareVersionMessage
     from fields import BaudRateField
 
     out_msg = QuerySoftwareVersionMessage(1)
     for i_br in BaudRateField.allowed_values:
-        br = BaudRateField.allowed_values[i_br]
-        print("Trying {} bps...".format(br))
-        with serial.Serial(port=serial_port, baudrate=br, timeout=1) as ser:
-            print("Probing software version...")
-            ser.write(bytes(out_msg))
-            print("Waiting for ACK...")
-            try:
-                i_ackmsg = look_for_ack(
-                    messages=interpret_messages(read_lines_ignoring_timeouts(ser)),
-                    msg_id=QuerySoftwareVersionMessage.msg_id
-                )
-                print("Got ACK after {} messages.".format(i_ackmsg))
-                return i_br, br
-            except TimeoutError as e:
-                print("Timeout: {}".format(e))
-                continue
+        for i_try in range(retries):
+            br = BaudRateField.allowed_values[i_br]
+            print("Trying {} bps (attempt {} of {})...".format(br, i_try + 1, retries))
+            with serial.Serial(port=serial_port, baudrate=br, timeout=1) as ser:
+                print("Probing software version...")
+                ser.write(bytes(out_msg))
+                print("Waiting for ACK...")
+                try:
+                    i_ackmsg = look_for_ack(
+                        messages=interpret_messages(read_lines_ignoring_timeouts(ser)),
+                        msg_id=QuerySoftwareVersionMessage.msg_id,
+                        limit=look_for_ack_limit,
+                    )
+                    print("Got ACK after {} messages.".format(i_ackmsg))
+                    return i_br, br
+                except TimeoutError as e:
+                    print("Timeout: {}".format(e))
+                    continue
     raise RuntimeError("Failed to determine baud rate")
