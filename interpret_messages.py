@@ -2,12 +2,13 @@
 
 import serial
 from output_messages import OutputMessage
-from common import line_separator
+from common import line_separator, port, baudrate
 
 
 def lines():
     with serial.Serial(
-        port=port
+        port=port,
+        baudrate=baudrate
     ) as ser:
         try:
             while True:

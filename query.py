@@ -3,7 +3,7 @@
 import serial
 import input_messages
 import time
-from common import port
+from common import port, baudrate
 
 msgs = [
     input_messages.QueryPositionPinningMessage(),
@@ -17,7 +17,8 @@ msgs = [
 ]
 
 with serial.Serial(
-    port=port
+    port=port,
+    baudrate=baudrate
 ) as ser:
     for msg in msgs:
         print(msg)
