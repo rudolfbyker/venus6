@@ -428,9 +428,10 @@ class BaudRateField(Uint8Field):
         4: 57600,
         5: 115200,
     }
+    baud_rate_ids = {v: k for k, v in allowed_values.items()}
 
     def __str__(self):
-        return "{} {}".format(self.value, type(self).unit)
+        return "{} {}".format(type(self).allowed_values[self.value], type(self).unit)
 
 
 class ComPortField(Uint8Field):

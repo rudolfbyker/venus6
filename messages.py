@@ -25,3 +25,12 @@ class Message:
                payload + \
                self.calculate_checksum() + \
                b'\x0d\x0a'
+
+
+class NmeaMessage:
+
+    def __init__(self, nmea_string):
+        self.nmea_string = nmea_string
+
+    def __str__(self):
+        return str(self.nmea_string)

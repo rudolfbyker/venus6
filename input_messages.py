@@ -99,7 +99,7 @@ class SetFactoryDefaultsMessage(InputMessage):
 
 class ConfigureSerialPortMessage(InputMessage):
     """
-    >>> bytes(ConfigureSerialPortMessage(rate=0, permanent=False)).hex()
+    >>> bytes(ConfigureSerialPortMessage(rate=4800, permanent=False)).hex()
     'a0a1000405000000050d0a'
     """
     msg_id = 0x05
@@ -117,7 +117,7 @@ Structure:
         from fields import ComPortField, BaudRateField, AttributesField
         self.values = [
             ComPortField(0),
-            BaudRateField(rate),
+            BaudRateField(BaudRateField.baud_rate_ids[rate]),
             AttributesField(permanent)
         ]
 
