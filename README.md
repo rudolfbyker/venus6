@@ -15,10 +15,11 @@ Based on Application Note 0003 version 1.4.19, published on 2011-10-26 (alas, a 
 ## Usage:
 
 1. Open two terminals on the computer (e.g. RPI) that is connected to the Venus.
-2. Run `./interpret_messages.py` in one terminal.
+2. Run `./watch.py` in one terminal.
 3. Run one of these in the other terminal:
 
   - `./query.py`
   - `./configure_datum.py`
   - `./configure_update_rate.py`
   - `./turn_off_position_pinning.py`
+  - `./configure_uart.py`
