@@ -98,17 +98,28 @@ class SetFactoryDefaultsMessage(InputMessage):
 
 
 class ConfigureSerialPortMessage(InputMessage):
+    """
+    >>> bytes(ConfigureSerialPortMessage(rate=0, permanent=False)).hex()
+    'a0a1000405000000050d0a'
+    """
     msg_id = 0x05
-    name = 'TODO'
+    name = 'Configure serial port'
     description = '''
+This is a request message which will configure the serial COM port, baud rate. This command is issued from the
+host to GPS receiver and GPS receiver should respond with an ACK or NACK. The payload length is 4 bytes.
+
+Structure:
+<0xA0,0xA1>< PL><05>< message body><CS><0x0D,0x0A>
 '''
 
-    def __init__(self):
+    def __init__(self, rate, permanent):
         super().__init__()
-        # from fields import
-        # self.values = [
-        #
-        # ]
+        from fields import ComPortField, BaudRateField, AttributesField
+        self.values = [
+            ComPortField(0),
+            BaudRateField(rate),
+            AttributesField(permanent)
+        ]
 
 
 class ConfigureNmeaMessage(InputMessage):

@@ -415,3 +415,27 @@ class AttributesField(Uint8Field):
 
     def __str__(self):
         return type(self).allowed_values[self.value]
+
+
+class BaudRateField(Uint8Field):
+    name = 'Baud rate'
+    unit = 'bps'
+    allowed_values = {
+        0: 4800,
+        1: 9600,
+        2: 19200,
+        3: 38400,
+        4: 57600,
+        5: 115200,
+    }
+
+    def __str__(self):
+        return "{} {}".format(self.value, type(self).unit)
+
+
+class ComPortField(Uint8Field):
+    name = 'COM port'
+    allowed_values = {0: 'COM1'}
+
+    def __str__(self):
+        return type(self).allowed_values[self.value]
